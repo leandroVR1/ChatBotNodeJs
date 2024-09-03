@@ -1,4 +1,4 @@
-require('dotenv').config();  // Cargar variables de entorno desde .env
+require('dotenv').config();
 const express = require('express');
 const axios = require('axios');
 
@@ -6,12 +6,12 @@ const app = express();
 app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
-const { GRAPH_API_TOKEN, BUSINESS_PHONE_NUMBER_ID, WEBHOOK_VERIFY_TOKEN } = process.env;
+const { GRAPH_API_TOKEN, BUSINESS_PHONE_NUMBER_ID } = process.env;
 
-// Ruta para enviar un mensaje
-app.post("/send-message", async (req, res) => {
-  const { to, message } = req.body;
+let lastInteraction = {}; // Almacena la última interacción de cada usuario
 
+// Función para enviar un mensaje a través de la API de WhatsApp
+async function sendMessage(to, message) {
   try {
     const response = await axios.post(`https://graph.facebook.com/v18.0/${BUSINESS_PHONE_NUMBER_ID}/messages`, {
       messaging_product: "whatsapp",
@@ -23,18 +23,39 @@ app.post("/send-message", async (req, res) => {
         "Content-Type": "application/json",
       },
     });
-
-    res.status(200).json(response.data);
+    return response.data;
   } catch (error) {
     console.error("Error sending message:", error.response ? error.response.data : error.message);
-    res.status(500).send("Error sending message.");
   }
-});
+}
 
-// Ruta para manejar los mensajes entrantes
-app.post("/webhook", (req, res) => {
-  console.log("Incoming webhook message:", JSON.stringify(req.body, null, 2));
-  res.sendStatus(200);  // Acknowledge receipt of the webhook event
+// Ruta para el webhook
+app.post("/webhook", async (req, res) => {
+  const changes = req.body.entry[0].changes[0].value;
+  
+  if (changes.messages) {
+    const message = changes.messages[0];
+    const from = message.from; // Número de teléfono del usuario
+    const text = message.text.body.toLowerCase(); // Texto del mensaje recibido
+
+    if (!lastInteraction[from] || message.timestamp - lastInteraction[from] > 86400) {
+      // Si es la primera interacción o ha pasado más de 24 horas desde la última
+      await sendMessage(from, "¡Hola! Bienvenido a nuestro chatbot.");
+      await sendMessage(from, "Elige una de las siguientes opciones:\n1. Opción 1\n2. Opción 2\n3. Opción 3");
+    } else if (text === "1") {
+      await sendMessage(from, "Has seleccionado la Opción 1.");
+    } else if (text === "2") {
+      await sendMessage(from, "Has seleccionado la Opción 2.");
+    } else if (text === "3") {
+      await sendMessage(from, "Has seleccionado la Opción 3.");
+    } else {
+      await sendMessage(from, "Opción no válida. Por favor, elige 1, 2, o 3.");
+    }
+
+    lastInteraction[from] = message.timestamp; // Actualiza la última interacción
+  }
+
+  res.sendStatus(200);
 });
 
 // Ruta para verificar el webhook
@@ -43,17 +64,12 @@ app.get("/webhook", (req, res) => {
   const token = req.query["hub.verify_token"];
   const challenge = req.query["hub.challenge"];
 
-  if (mode === "subscribe" && token === WEBHOOK_VERIFY_TOKEN) {
+  if (mode === "subscribe" && token === process.env.WEBHOOK_VERIFY_TOKEN) {
     res.status(200).send(challenge);
     console.log("Webhook verified successfully!");
   } else {
     res.sendStatus(403);
   }
-});
-
-// Ruta de prueba
-app.get("/", (req, res) => {
-  res.send(`<pre>Nothing to see here. Checkout README.md to start.</pre>`);
 });
 
 // Inicia el servidor
