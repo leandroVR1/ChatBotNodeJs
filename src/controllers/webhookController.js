@@ -2,6 +2,8 @@ const messageController = require("./messageController");
 const userState = require("../utils/userState");
 const whatsappService = require("../services/whatsappService");
 const messageCompanyController = require("./messageCompanyControllers");
+const messageFuturoCoderController = require("./messageFutureCoderController");
+
 async function handleWebhook(req, res) {
   const { body } = req;
   if (body.object === "whatsapp_business_account") {
@@ -86,10 +88,7 @@ async function handleReplyMessage(from, replyId, userStateData) {
       userState.setUserState(from, { stage: "awaiting_email" });
       break;
     case "option1":
-      await messageController.sendInitialMenuMessage(
-        from,
-        "Escogiste Futuro Coder"
-      );
+      await messageFuturoCoderController.sendWelcomeMessage(from);
       break;
     case "option2":
       await messageController.sendCompany(from, "Escogiste Empresa");
@@ -97,46 +96,41 @@ async function handleReplyMessage(from, replyId, userStateData) {
     case "option3":
       await messageController.sendSecondaryMenuMessage(from);
       break;
-    case "option4":
-      await messageController.sendInitialMenuMessage(
+    case "option1coder":
+      await messageFuturoCoderController.coderInfo(from);
+      await messageFuturoCoderController.sendWelcomeMessage(from);  // Redirige al menú de Futuro Coder
+      break;
+    case "option2coder":
+      await messageFuturoCoderController.coderRegistration(from);
+      await messageFuturoCoderController.sendWelcomeMessage(from);  // Redirige al menú de Futuro Coder
+      break;
+    case "option3coder":
+      await messageFuturoCoderController.sendMoreOptionsMessage(from);
+      break;
+    case "option4coder":
+      await messageFuturoCoderController.coderAdvisor(from); // Implementa esta función en tu controlador
+      await messageFuturoCoderController.sendWelcomeMessage(from);  // Redirige al menú de Futuro Coder
+      break;
+    case "option5coder":
+      await messageController.sendInitialMenuMessage(from);
+      break;
+    case "option6coder":
+      await whatsappService.sendMessageFunction.sendText(
         from,
-        "Escogiste Coworking"
+        "Gracias por usar nuestro servicio. ¡Hasta luego! 👋"
       );
-      break;
-    case "option5":
-      await messageController.sendInitialMenuMessage(
-        from,
-        "Escogiste Trabaja con Nosotros"
-      );
-      break;
-    case "option6":
-      await messageController.sendInitialMenuMessage(
-        from,
-        "Gracias por usar nuestro servicio. ¡Hasta luego!"
-      );
-      break;
-
-    case "option1company":
-      await messageCompanyController.companyinfo(from);
-      
-        await messageController.sendCompany(from, "Escogiste Empresa");
-      break;
-    case "option2company":
-      await messageCompanyController.sendcontacto(from);
-        await messageController.sendCompany(from, "Escogiste Empresa");
-      break;
-    case "option3company":
-      await messageController.sendInitialMenuMessage(
-        from)
+      userState.clearUserState(from);
       break;
     default:
-      await messageController.sendInitialMenuMessage(
+      await whatsappService.sendMessageFunction.sendText(
         from,
-        "Opción no válida. Por favor, selecciona una opción del menú."
+        "Lo siento, no entiendo esa opción."
       );
       break;
   }
 }
+
+
 
 function verifyWebhook(req, res) {
   const mode = req.query["hub.mode"];
