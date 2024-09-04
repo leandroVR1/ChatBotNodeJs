@@ -109,15 +109,14 @@ async function handleReplyMessage(from, replyId, userStateData) {
       break;
     case "option1coder":
       await messageFuturoCoderController.coderInfo(from);
-      await messageFuturoCoderController.sendWelcomeMessage(from);  // Redirige al menú de Futuro Coder
+      await messageFuturoCoderController.sendWelcomeMessage(from);  
       break;
     case "option5":
       await messageJobController.sendJobInfo(from);
       break;
     case "option2coder":
       await messageFuturoCoderController.coderRegistration(from);
-      await messageFuturoCoderController.sendWelcomeMessage(from);  // Redirige al menú de Futuro Coder
-      break;
+      await messageFuturoCoderController.sendWelcomeMessage(from);  
     case "option6":
       await messageController.sendBye(from);
       break;
@@ -129,8 +128,8 @@ async function handleReplyMessage(from, replyId, userStateData) {
       await messageController.sendCompany(from, "Escogiste Empresa");
       break;
     case "option4coder":
-      await messageFuturoCoderController.coderAdvisor(from); // Implementa esta función en tu controlador
-      await messageFuturoCoderController.sendWelcomeMessage(from);  // Redirige al menú de Futuro Coder
+      await messageFuturoCoderController.coderAdvisor(from); 
+      await messageFuturoCoderController.sendWelcomeMessage(from); 
       break;
     case "option2company":
       await messageCompanyController.sendcontacto(from);
