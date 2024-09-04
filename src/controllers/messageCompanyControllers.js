@@ -20,7 +20,7 @@ async function sendcontacto(to){
         { id: "option1contacto", title: "1. contacto" },
         { id: "option2contacto", title: "2. cerrar" }
       ];
-      await whatsappService.sendMessageFunction.sendInteractiveMessage(to, "SPuedes comunicarte con uno de nuestros asesores comerciales para agendar una reunión y resolver cualquier duda. Juntos, personalizaremos la solución perfecta para tu empresa.:", buttons);
+      await whatsappService.sendMessageFunction.sendInteractiveMessage(to, "Puedes comunicarte con uno de nuestros asesores comerciales para agendar una reunión y resolver cualquier duda. Juntos, personalizaremos la solución perfecta para tu empresa.:", buttons);
 }
 async function sendRiwiContacto(to){
     await whatsappService.sendMessageFunction.sendText(to,"anexar link de contacto")
