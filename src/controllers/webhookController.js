@@ -4,7 +4,6 @@ const whatsappService = require("../services/whatsappService");
 const messageCompanyController = require("./messageCompanyControllers");
 const messageCoworkingController = require("./messageCoworkingControllers");
 const messageJobController = require("../controllers/messageJobControllers");
-
 const messageFuturoCoderController = require("./messageFutureCoderController");
 
 async function handleWebhook(req, res) {
@@ -106,33 +105,36 @@ async function handleReplyMessage(from, replyId, userStateData) {
       await messageController.sendSecondaryMenuMessage(from);
       break;
     case "option4":
-   await messageCoworkingController.sendWelcomeMessage(from);
+      await messageCoworkingController.sendWelcomeMessage(from);
+      break;
     case "option1coder":
       await messageFuturoCoderController.coderInfo(from);
       await messageFuturoCoderController.sendWelcomeMessage(from);  // Redirige al menú de Futuro Coder
       break;
     case "option5":
-     await messageJobController.sendJobInfo(from);
+      await messageJobController.sendJobInfo(from);
+      break;
     case "option2coder":
       await messageFuturoCoderController.coderRegistration(from);
       await messageFuturoCoderController.sendWelcomeMessage(from);  // Redirige al menú de Futuro Coder
       break;
     case "option6":
       await messageController.sendBye(from);
+      break;
     case "option3coder":
       await messageFuturoCoderController.sendMoreOptionsMessage(from);
       break;
-
     case "option1company":
       await messageCompanyController.companyinfo(from);
-
       await messageController.sendCompany(from, "Escogiste Empresa");
+      break;
     case "option4coder":
       await messageFuturoCoderController.coderAdvisor(from); // Implementa esta función en tu controlador
       await messageFuturoCoderController.sendWelcomeMessage(from);  // Redirige al menú de Futuro Coder
       break;
     case "option2company":
       await messageCompanyController.sendcontacto(from);
+      break;
     case "option5coder":
       await messageController.sendInitialMenuMessage(from);
       break;
@@ -146,7 +148,6 @@ async function handleReplyMessage(from, replyId, userStateData) {
     case "option2contacto":
       await messageController.sendInitialMenuMessage(from);
       break;
-
     // Código coworking
     case "option1coworking":
       await messageCoworkingController.sendCoworkingInfo(from);
@@ -156,17 +157,16 @@ async function handleReplyMessage(from, replyId, userStateData) {
       await messageCoworkingController.sendContactoDayana(from);
       await messageCoworkingController.sendWelcomeMessage(from);
       break;
-
     case "option3coworking":
       await messageCoworkingController.sendMainMenu(from);
       break;
-
     // Código trabaja con nosotros
     case "option1job":
       await messageController.sendInitialMenuMessage(from);
       break;
     case "option2job":
       await messageController.sendBye(from);
+      break;
     case "option6coder":
       await whatsappService.sendMessageFunction.sendText(
         from,
@@ -182,6 +182,7 @@ async function handleReplyMessage(from, replyId, userStateData) {
       break;
   }
 }
+
 function verifyWebhook(req, res) {
   const mode = req.query["hub.mode"];
   const token = req.query["hub.verify_token"];
@@ -199,6 +200,3 @@ module.exports = {
   handleWebhook,
   verifyWebhook,
 };
-
-
-
