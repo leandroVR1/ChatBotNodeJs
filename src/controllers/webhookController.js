@@ -2,6 +2,10 @@ const messageController = require("./messageController");
 const userState = require("../utils/userState");
 const whatsappService = require("../services/whatsappService");
 const messageCompanyController = require("./messageCompanyControllers");
+const messageCoworkingController = require("./messageCoworkingControllers"); 
+const messageJobController = require("./messageJobController"); 
+
+
 async function handleWebhook(req, res) {
   const { body } = req;
   if (body.object === "whatsapp_business_account") {
@@ -129,15 +133,38 @@ async function handleReplyMessage(from, replyId, userStateData) {
       await messageController.sendInitialMenuMessage(
         from)
       break;
+
+
+    // Código coworking
+    case "option1coworking":
+      await messageCoworkingController.sendCoworkingInfo(from);
+      break;
+    case "option2coworking":
+      await messageCoworkingController.sendContactoDayana(from);
+      break;
+    case "option3coworking":
+      await messageCoworkingController.sendMainMenu(from);
+      break;
+    case "option4coworking":
+      await messageCoworkingController.closeConversation(from);
+      break;
+
+
+    // Código trabaja con nosotros
+    case "option1job":
+      await messageJobController.sendMainMenu(from);
+      break;
+    case "option2job":
+      await messageJobController.closeConversation(from);
+      break;
     default:
       await messageController.sendInitialMenuMessage(
         from,
         "Opción no válida. Por favor, selecciona una opción del menú."
       );
       break;
-  }
 }
-
+}
 function verifyWebhook(req, res) {
   const mode = req.query["hub.mode"];
   const token = req.query["hub.verify_token"];
@@ -155,3 +182,4 @@ module.exports = {
   handleWebhook,
   verifyWebhook,
 };
+
