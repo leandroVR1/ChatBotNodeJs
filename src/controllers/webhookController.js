@@ -51,11 +51,17 @@ async function handleTextMessage(from, text, userStateData) {
       });
       break;
     case "awaiting_email":
-      await messageController.confirmData(from, text, "correo electrónico");
-      userState.setUserState(from, {
-        stage: "awaiting_email_confirmation",
-        email: text,
-      });
+      // Validar si el correo contiene un '@'
+      if (!text.includes('@')) {
+        await whatsappService.sendMessageFunction.sendText(from, "Correo no válido. Por favor, proporciona un correo electrónico válido.");
+        await messageController.askForEmail(from);
+      } else {
+        await messageController.confirmData(from, text, "correo electrónico");
+        userState.setUserState(from, {
+          stage: "awaiting_email_confirmation",
+          email: text,
+        });
+      }
       break;
   }
 }
@@ -182,4 +188,6 @@ module.exports = {
   handleWebhook,
   verifyWebhook,
 };
+
+
 
