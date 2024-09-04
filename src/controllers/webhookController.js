@@ -92,7 +92,7 @@ async function handleReplyMessage(from, replyId, userStateData) {
       );
       break;
     case "option2":
-      await messageController.sendCompany(from, "Escogiste Empresa");
+        await messageCompanyController.sendWelcomeMessage(from);
       break;
     case "option3":
       await messageController.sendSecondaryMenuMessage(from);
@@ -110,10 +110,7 @@ async function handleReplyMessage(from, replyId, userStateData) {
       );
       break;
     case "option6":
-      await messageController.sendInitialMenuMessage(
-        from,
-        "Gracias por usar nuestro servicio. ¡Hasta luego!"
-      );
+      await messageController.sendBye(from);
       break;
 
     case "option1company":
@@ -123,12 +120,17 @@ async function handleReplyMessage(from, replyId, userStateData) {
       break;
     case "option2company":
       await messageCompanyController.sendcontacto(from);
-        await messageController.sendCompany(from, "Escogiste Empresa");
       break;
     case "option3company":
       await messageController.sendInitialMenuMessage(
         from)
       break;
+      case "option1contacto":
+        await messageCompanyController.sendRiwiContacto(from);
+        break;
+        case "option2contacto":
+          await messageController.sendInitialMenuMessage(from);
+          break;
     default:
       await messageController.sendInitialMenuMessage(
         from,

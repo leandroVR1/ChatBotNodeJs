@@ -19,7 +19,9 @@ async function askForName(to) {
 async function askForEmail(to) {
   await whatsappService.sendMessageFunction.sendText(to, "Ahora, por favor, dime tu correo electrónico.");
 }
-
+async function sendBye(to) {
+    await whatsappService.sendMessageFunction.sendText(to, "Gracias por usar nuestro servicio. ¡Hasta luego!");
+}
 async function confirmData(to, data, type) {
   const buttons = [
     { id: `confirm_${type}`, title: "Sí" },
@@ -58,5 +60,5 @@ module.exports = {
   askForEmail,
   confirmData,
   sendInitialMenuMessage,
-  sendSecondaryMenuMessage,sendCompany
+  sendSecondaryMenuMessage,sendCompany,sendBye
 };
