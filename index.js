@@ -31,7 +31,7 @@ async function sendWelcomeMessage(to) {
     type: "image",
     image: {
       link: "https://www.estamosenlinea.co/wp-content/uploads/2023/11/riwi.jpg",
-      caption: "¡Hola! Para comenzar, debes aceptar los términos y condiciones.",
+      caption: "👋 ¡Hola! Para comenzar, debes aceptar los términos y condiciones.",
     },
   };
 
@@ -54,14 +54,14 @@ async function sendTermsAndConditions(to) {
             type: "reply",
             reply: {
               id: "accept_terms",
-              title: "Sí",
+              title: "Sí ✅",
             },
           },
           {
             type: "reply",
             reply: {
               id: "decline_terms",
-              title: "No",
+              title: "No ❌",
             },
           },
         ],
@@ -78,7 +78,7 @@ async function askForName(to) {
     to: to,
     type: "text",
     text: {
-      body: "Por favor, dime tu nombre.",
+      body: "😊 Por favor, dime tu nombre.",
     },
   };
 
@@ -91,7 +91,7 @@ async function askForEmail(to) {
     to: to,
     type: "text",
     text: {
-      body: "Ahora, por favor, dime tu correo electrónico.",
+      body: "📧 Ahora, por favor, dime tu correo electrónico.",
     },
   };
 
@@ -114,14 +114,14 @@ async function confirmData(to, data, type) {
             type: "reply",
             reply: {
               id: `confirm_${type}`,
-              title: "Sí",
+              title: "Sí ✅",
             },
           },
           {
             type: "reply",
             reply: {
               id: `retry_${type}`,
-              title: "No",
+              title: "No ❌",
             },
           },
         ],
@@ -148,21 +148,21 @@ async function sendInitialMenuMessage(to) {
             type: "reply",
             reply: {
               id: "option1",
-              title: "1. Futuro Coder",
+              title: "1. Futuro Coder 💻",
             },
           },
           {
             type: "reply",
             reply: {
               id: "option2",
-              title: "2. Empresa",
+              title: "2. Empresa 🏢",
             },
           },
           {
             type: "reply",
             reply: {
               id: "option3",
-              title: "3. Más opciones",
+              title: "3. Más opciones 🔽",
             },
           },
         ],
@@ -189,21 +189,21 @@ async function sendSecondaryMenuMessage(to) {
             type: "reply",
             reply: {
               id: "option4",
-              title: "4. Coworking",
+              title: "4. Coworking 🏠",
             },
           },
           {
             type: "reply",
             reply: {
               id: "option5",
-              title: "5. Trabaja con",
+              title: "5. Trabaja con Nosotros 🤝",
             },
           },
           {
             type: "reply",
             reply: {
               id: "option6",
-              title: "6. Cerrar",
+              title: "6. Cerrar 🚪",
             },
           },
         ],
@@ -317,7 +317,7 @@ app.post("/webhook", async (req, res) => {
                   to: from,
                   type: "text",
                   text: {
-                    body: "Escogiste Futuro Coder",
+                    body: "Escogiste Futuro Coder 💻",
                   },
                 });
                 break;
@@ -327,7 +327,7 @@ app.post("/webhook", async (req, res) => {
                   to: from,
                   type: "text",
                   text: {
-                    body: "Escogiste Empresa",
+                    body: "Escogiste Empresa 🏢",
                   },
                 });
                 break;
@@ -340,7 +340,7 @@ app.post("/webhook", async (req, res) => {
                   to: from,
                   type: "text",
                   text: {
-                    body: "Escogiste Coworking",
+                    body: "Escogiste Coworking 🏠",
                   },
                 });
                 break;
@@ -350,7 +350,7 @@ app.post("/webhook", async (req, res) => {
                   to: from,
                   type: "text",
                   text: {
-                    body: "Escogiste Trabaja con Nosotros",
+                    body: "Escogiste Trabaja con Nosotros 🤝",
                   },
                 });
                 break;
@@ -360,9 +360,10 @@ app.post("/webhook", async (req, res) => {
                   to: from,
                   type: "text",
                   text: {
-                    body: "Gracias por usar nuestro servicio. ¡Hasta luego!",
+                    body: "Gracias por usar nuestro servicio. ¡Hasta luego! 👋",
                   },
                 });
+                delete userStates[from]; // Limpiar estado
                 break;
               default:
                 await sendMessage({
@@ -370,7 +371,7 @@ app.post("/webhook", async (req, res) => {
                   to: from,
                   type: "text",
                   text: {
-                    body: "Opción no válida. Por favor, selecciona una opción del menú.",
+                    body: "Lo siento, no entiendo esa opción.",
                   },
                 });
                 break;
@@ -379,26 +380,36 @@ app.post("/webhook", async (req, res) => {
         }
       });
     });
+    res.sendStatus(200);
+  } else {
+    res.sendStatus(404);
   }
-  res.sendStatus(200);
 });
 
-
-// Ruta para verificar el webhook
+// Webhook para la verificación de Meta
 app.get("/webhook", (req, res) => {
+  const verify_token = process.env.WEBHOOK_VERIFY_TOKEN; 
+
+  // Parse params from the request
   const mode = req.query["hub.mode"];
   const token = req.query["hub.verify_token"];
   const challenge = req.query["hub.challenge"];
 
-  if (mode === "subscribe" && token === process.env.WEBHOOK_VERIFY_TOKEN) {
-    res.status(200).send(challenge);
-    console.log("Webhook verified successfully!");
-  } else {
-    res.sendStatus(403);
+  // Check if a token and mode were sent
+  if (mode && token) {
+    // Check the mode and token sent are correct
+    if (mode === "subscribe" && token === verify_token) {
+      // Respond with the challenge token from the request
+      console.log("WEBHOOK_VERIFIED");
+      res.status(200).send(challenge);
+    } else {
+      // Respond with '403 Forbidden' if verify tokens do not match
+      res.sendStatus(403);
+    }
   }
 });
 
-// Inicia el servidor
+
 app.listen(PORT, () => {
-  console.log(`Server is listening on port: ${PORT}`);
+  console.log(`Servidor en ejecución en el puerto ${PORT}`);
 });
