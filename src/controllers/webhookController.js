@@ -3,7 +3,7 @@ const userState = require("../utils/userState");
 const whatsappService = require("../services/whatsappService");
 const messageCompanyController = require("./messageCompanyControllers");
 const messageCoworkingController = require("./messageCoworkingControllers");
-const messageJobController = require("./messageJobController");
+const messageJobController = require("../controllers/messageJobControllers");
 
 async function handleWebhook(req, res) {
   const { body } = req;
@@ -101,16 +101,10 @@ async function handleReplyMessage(from, replyId, userStateData) {
       await messageController.sendSecondaryMenuMessage(from);
       break;
     case "option4":
-      await messageController.sendInitialMenuMessage(
-        from,
-        "Escogiste Coworking"
-      );
+   await messageCoworkingController.sendWelcomeMessage(from);
       break;
     case "option5":
-      await messageController.sendInitialMenuMessage(
-        from,
-        "Escogiste Trabaja con Nosotros"
-      );
+     await messageJobController.sendJobInfo(from);
       break;
     case "option6":
       await messageController.sendBye(from);
@@ -129,6 +123,7 @@ async function handleReplyMessage(from, replyId, userStateData) {
       break;
     case "option1contacto":
       await messageCompanyController.sendRiwiContacto(from);
+      await messageController.sendBye(from);
       break;
     case "option2contacto":
       await messageController.sendInitialMenuMessage(from);
@@ -137,23 +132,23 @@ async function handleReplyMessage(from, replyId, userStateData) {
     // Código coworking
     case "option1coworking":
       await messageCoworkingController.sendCoworkingInfo(from);
+      await messageCoworkingController.sendWelcomeMessage(from);
       break;
     case "option2coworking":
       await messageCoworkingController.sendContactoDayana(from);
+      await messageCoworkingController.sendWelcomeMessage(from);
       break;
+
     case "option3coworking":
       await messageCoworkingController.sendMainMenu(from);
-      break;
-    case "option4coworking":
-      await messageCoworkingController.closeConversation(from);
       break;
 
     // Código trabaja con nosotros
     case "option1job":
-      await messageJobController.sendMainMenu(from);
+      await messageController.sendInitialMenuMessage(from);
       break;
     case "option2job":
-      await messageJobController.closeConversation(from);
+      await messageController.sendBye(from);
       break;
     default:
       await messageController.sendInitialMenuMessage(

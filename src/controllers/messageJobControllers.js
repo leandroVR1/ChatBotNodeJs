@@ -3,8 +3,8 @@ const whatsappService = require("../services/whatsappService");
 async function sendJobInfo(to) {
     await whatsappService.sendMessageFunction.sendText(to, "Aquí está el link para trabajar con nosotros: https://riwi.io/trabaja-con-nosotros/");
     const buttons = [
-        { id: "option1job", title: "1. Regresar al menú principal" },
-        { id: "option2job", title: "2. Cerrar conversación" }
+        { id: "option1job", title: "1. Regresar" },
+        { id: "option2job", title: "2. Cerrar" }
     ];
     await whatsappService.sendMessageFunction.sendInteractiveMessage(to, "Selecciona una opción:", buttons);
 }
