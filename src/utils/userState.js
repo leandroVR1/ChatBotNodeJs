@@ -4,7 +4,7 @@ const userStates = {};
 
 // Obtener el estado actual de un usuario
 function getUserState(userId) {
-  return userStates[userId] || { stage: "initial" };
+  return userStates[userId] || { stage: "initial", };
 }
 
 // Establecer el estado de un usuario

@@ -11,7 +11,9 @@ async function sendTermsAndConditions(to) {
   ];
   await whatsappService.sendMessageFunction.sendInteractiveMessage(to, "¿Aceptas los términos y condiciones?", buttons);
 }
-
+async function sendMessageTime(to) {
+  await whatsappService.sendMessageFunction.sendText(to,"Hola, ¿Continuas con nosotros?")
+}
 async function askForName(to) {
   await whatsappService.sendMessageFunction.sendText(to, "Por favor, dime tu nombre.");
 }
@@ -52,7 +54,12 @@ async function sendSecondaryMenuMessage(to) {
 
   await whatsappService.sendMessageFunction.sendInteractiveMessage(to, "Selecciona una opción:", buttons);
 }
-
+async function sendMessageTimeOutButton(to) {
+  const buttons = [
+    { id: `opcion1In`, title: "Sí ✅" },
+    { id: `opcion2Out`, title: "No ❌" }
+  ];
+}
 module.exports = {
   sendWelcomeMessage,
   sendTermsAndConditions,
@@ -60,5 +67,5 @@ module.exports = {
   askForEmail,
   confirmData,
   sendInitialMenuMessage,
-  sendSecondaryMenuMessage,sendCompany,sendBye
+  sendSecondaryMenuMessage,sendCompany,sendBye,sendMessageTime,sendMessageTimeOutButton
 };

@@ -20,13 +20,20 @@ async function handleWebhook(req, res) {
 
           const userStateData = userState.getUserState(from) || {
             stage: "initial",
+            lastactive: Date.now(),
+            inactivityMessageSent: false,
+            
           };
 
           if (!replyId) {
+          
+            
             await handleTextMessage(from, text, userStateData);
           } else {
+            
             await handleReplyMessage(from, replyId, userStateData);
           }
+          // await clearInactivityTimer(from,userStateData)
         }
       }
     }
@@ -35,6 +42,9 @@ async function handleWebhook(req, res) {
 }
 
 async function handleTextMessage(from, text, userStateData) {
+  await resetInactivityTimer(from, userStateData);
+  console.log(userStateData.timeOutId);
+  
   switch (userStateData.stage) {
     case "initial":
       await messageController.sendWelcomeMessage(from);
@@ -51,9 +61,11 @@ async function handleTextMessage(from, text, userStateData) {
       });
       break;
     case "awaiting_email":
-      // Validar si el correo contiene un '@'
-      if (!text.includes('@')) {
-        await whatsappService.sendMessageFunction.sendText(from, "Correo no válido. Por favor, proporciona un correo electrónico válido.");
+      if (!text.includes("@")) {
+        await whatsappService.sendMessageFunction.sendText(
+          from,
+          "Correo no válido. Por favor, proporciona un correo electrónico válido."
+        );
         await messageController.askForEmail(from);
       } else {
         await messageController.confirmData(from, text, "correo electrónico");
@@ -67,6 +79,8 @@ async function handleTextMessage(from, text, userStateData) {
 }
 
 async function handleReplyMessage(from, replyId, userStateData) {
+  await resetInactivityTimer(from, userStateData);
+
   switch (replyId) {
     case "accept_terms":
       await messageController.askForName(from);
@@ -75,8 +89,9 @@ async function handleReplyMessage(from, replyId, userStateData) {
     case "decline_terms":
       await whatsappService.sendMessageFunction.sendText(
         from,
-        "Lo sentimos, debes aceptar los términos para continuar. ¡Hasta luego!"
+        "Lo sentimos, debes aceptar los términos para continuar. ¡Hasta luego!" 
       );
+      await clearInactivityTimer(from,userStateData)
       userState.clearUserState(from);
       break;
     case "confirm_nombre":
@@ -97,81 +112,111 @@ async function handleReplyMessage(from, replyId, userStateData) {
       break;
     case "option1":
       await messageFuturoCoderController.sendWelcomeMessage(from);
+       await clearInactivityTimer(from,userStateData)
       break;
     case "option2":
       await messageCompanyController.sendWelcomeMessage(from);
+      await clearInactivityTimer(from,userStateData)
       break;
     case "option3":
       await messageController.sendSecondaryMenuMessage(from);
+      await clearInactivityTimer(from,userStateData)
       break;
     case "option4":
       await messageCoworkingController.sendWelcomeMessage(from);
+      await clearInactivityTimer(from,userStateData)
       break;
     case "option1coder":
       await messageFuturoCoderController.coderInfo(from);
-      await messageFuturoCoderController.sendWelcomeMessage(from);  // Redirige al menú de Futuro Coder
+      await messageFuturoCoderController.sendWelcomeMessage(from);
+      await clearInactivityTimer(from,userStateData)
       break;
     case "option5":
       await messageJobController.sendJobInfo(from);
+      await clearInactivityTimer(from,userStateData)
       break;
     case "option2coder":
       await messageFuturoCoderController.coderRegistration(from);
-      await messageFuturoCoderController.sendWelcomeMessage(from);  // Redirige al menú de Futuro Coder
+      await messageFuturoCoderController.sendWelcomeMessage(from);
+      await clearInactivityTimer(from,userStateData)
       break;
     case "option6":
       await messageController.sendBye(from);
+      await clearInactivityTimer(from,userStateData)
+      userState.clearUserState(from);
       break;
     case "option3coder":
       await messageFuturoCoderController.sendMoreOptionsMessage(from);
+      await clearInactivityTimer(from,userStateData)
       break;
     case "option1company":
       await messageCompanyController.companyinfo(from);
       await messageController.sendCompany(from, "Escogiste Empresa");
+      await clearInactivityTimer(from,userStateData)
       break;
     case "option4coder":
-      await messageFuturoCoderController.coderAdvisor(from); // Implementa esta función en tu controlador
-      await messageFuturoCoderController.sendWelcomeMessage(from);  // Redirige al menú de Futuro Coder
+      await messageFuturoCoderController.coderAdvisor(from);
+      await messageFuturoCoderController.sendWelcomeMessage(from);
+      await clearInactivityTimer(from,userStateData)
       break;
     case "option2company":
       await messageCompanyController.sendcontacto(from);
+      await clearInactivityTimer(from,userStateData)
       break;
     case "option5coder":
       await messageController.sendInitialMenuMessage(from);
+      await clearInactivityTimer(from,userStateData)
       break;
     case "option3company":
       await messageController.sendInitialMenuMessage(from);
+      await clearInactivityTimer(from,userStateData)
       break;
     case "option1contacto":
       await messageCompanyController.sendRiwiContacto(from);
       await messageController.sendBye(from);
+      await clearInactivityTimer(from,userStateData)
       break;
     case "option2contacto":
       await messageController.sendInitialMenuMessage(from);
+      await clearInactivityTimer(from,userStateData)
       break;
-    // Código coworking
     case "option1coworking":
       await messageCoworkingController.sendCoworkingInfo(from);
       await messageCoworkingController.sendWelcomeMessage(from);
+      await clearInactivityTimer(from,userStateData)
       break;
     case "option2coworking":
       await messageCoworkingController.sendContactoDayana(from);
       await messageCoworkingController.sendWelcomeMessage(from);
+      await clearInactivityTimer(from,userStateData)
       break;
     case "option3coworking":
       await messageCoworkingController.sendMainMenu(from);
+      await clearInactivityTimer(from,userStateData)
       break;
-    // Código trabaja con nosotros
     case "option1job":
       await messageController.sendInitialMenuMessage(from);
+      await clearInactivityTimer(from,userStateData)
       break;
     case "option2job":
       await messageController.sendBye(from);
+      await clearInactivityTimer(from,userStateData)
       break;
     case "option6coder":
       await whatsappService.sendMessageFunction.sendText(
         from,
         "Gracias por usar nuestro servicio. ¡Hasta luego! 👋"
       );
+      await clearInactivityTimer(from,userStateData)
+      userState.clearUserState(from);
+      break;
+    case "option1in":
+      await messageController.sendWelcomeMessage(from);
+      await clearInactivityTimer(from,userStateData)
+      break;
+    case "option2out":
+      await messageController.sendBye(from);
+      await clearInactivityTimer(from,userStateData)
       userState.clearUserState(from);
       break;
     default:
@@ -182,6 +227,7 @@ async function handleReplyMessage(from, replyId, userStateData) {
       break;
   }
 }
+
 function verifyWebhook(req, res) {
   const mode = req.query["hub.mode"];
   const token = req.query["hub.verify_token"];
@@ -193,6 +239,59 @@ function verifyWebhook(req, res) {
   } else {
     res.sendStatus(403);
   }
+}
+
+async function resetInactivityTimer(from, userStateData) {
+ 
+  userState.setUserState(from, {
+    ...userStateData,
+    lastactive: Date.now(),
+    inactivityMessageSent: false,
+  });
+
+
+  if (userStateData.timeOutId) {
+    clearTimeout(userStateData.timeOutId);
+    console.log(userStateData.timeOutId);
+    console.log(userStateData.inactivityMessageSent);
+  }
+
+  
+  const timeOutId = setTimeout(async () => {
+    try {
+      
+      const updatedUserState = userState.getUserState(from);
+
+      if (!updatedUserState.inactivityMessageSent) {
+        await messageController.sendMessageTime(from);
+        console.log(updatedUserState.timeOutId);
+
+   
+        userState.setUserState(from, {
+          ...updatedUserState,
+          inactivityMessageSent: true,
+        });
+      }
+    } catch (error) {
+      console.error("Error sending inactivity message:", error);
+    }
+  }, 60000);
+
+  userState.setUserState(from, {
+    ...userStateData,
+    timeOutId: timeOutId,
+  });
+}
+
+
+async function clearInactivityTimer(from, userStateData) {
+  if (userStateData.timeOutId) {
+    clearTimeout(userStateData.timeOutId);
+  }
+  userState.setUserState(from, {
+    ...userStateData,
+    inactivityMessageSent: false,
+  });
 }
 
 module.exports = {
