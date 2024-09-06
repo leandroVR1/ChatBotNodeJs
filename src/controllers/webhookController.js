@@ -5,6 +5,7 @@ const messageCompanyController = require("./messageCompanyControllers");
 const messageCoworkingController = require("./messageCoworkingControllers");
 const messageJobController = require("../controllers/messageJobControllers");
 const messageFuturoCoderController = require("./messageFutureCoderController");
+const { set } = require("express/lib/application");
 
 async function handleWebhook(req, res) {
   const { body } = req;
@@ -135,7 +136,7 @@ async function handleReplyMessage(from, replyId, userStateData) {
       await messageFuturoCoderController.coderRegistration(from);
       setTimeout(async () => {
         await messageFuturoCoderController.sendWelcomeMessage(from);
-      }, 1100);
+      }, 2000);
       break;
     case "option6":
       await messageController.sendBye(from);
@@ -149,21 +150,21 @@ async function handleReplyMessage(from, replyId, userStateData) {
     case "option1company":
       await messageCompanyController.companyinfo(from);
       setTimeout(async () => {
-        await messageCompanyController.sendcontacto(from);
-      }, 1100);
+        await messageCompanyController.sendWelcomeMessage(from);
+      }, 2000);
       
       break;
     case "option4coder":
       await messageFuturoCoderController.coderAdvisor(from);
       setTimeout(async () => {
         await messageFuturoCoderController.sendWelcomeMessage(from);
-      }, 1100);
+      }, 2000);
       
       break;
     case "option2company":
       setTimeout(async () => {
         await messageCompanyController.sendcontacto(from);
-      }, 1100);
+      }, 2000);
       
       
       break;
@@ -177,7 +178,10 @@ async function handleReplyMessage(from, replyId, userStateData) {
       break;
     case "option1contacto":
       await messageCompanyController.sendRiwiContacto(from);
-      await messageController.sendBye(from);
+      setTimeout(async () => {
+        await messageController.sendBye(from);
+      },2000);
+      
       
       break;
     case "option2contacto":
@@ -188,7 +192,7 @@ async function handleReplyMessage(from, replyId, userStateData) {
       await messageCoworkingController.sendCoworkingInfo(from);
       setTimeout(async () => {
         await messageCoworkingController.sendWelcomeMessage(from);
-      }, 1000);
+      }, 2000);
       
       
       
@@ -197,7 +201,7 @@ async function handleReplyMessage(from, replyId, userStateData) {
       await messageCoworkingController.sendContactoDayana(from);
       setTimeout(async () => {
         await messageCoworkingController.sendWelcomeMessage(from);
-      }, 1000);
+      }, 2000);
       
       
       break;

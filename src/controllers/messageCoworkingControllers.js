@@ -4,9 +4,9 @@ const webhookController = require("./webhookController");
 async function sendWelcomeMessage(to) {
     await whatsappService.sendMessageFunction.sendText(to, "Bienvenido a coworking riwi");
     const buttons = [
-        { id: "option1coworking", title: "1. Informacion" },
-        { id: "option2coworking", title: "2. Contacto" },
-        { id: "option4coworking", title: "3. Cerrar" }
+        { id: "option1coworking", title: "1. Informacion 📖" },
+        { id: "option2coworking", title: "2. Contacto 📲" },
+        { id: "option3coworking", title: "3. Finalizar 🚪" }
     ];
     await whatsappService.sendMessageFunction.sendInteractiveMessage(to, "Selecciona una opción:", buttons);
 }
