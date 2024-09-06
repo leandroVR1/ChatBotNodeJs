@@ -11,12 +11,10 @@ async function sendWelcomeMessage(to) {
         { id: "option3company", title: "3. cerrar" }
       ];
       await whatsappService.sendMessageFunction.sendInteractiveMessage(to, "Selecciona una opción de nuestro apartado empresarial:", buttons);
-      await whatsappService.sendMessageFunction.sendInteractiveMessage(to, "Selecciona una opción de nuestro apartado empresarial:", buttons);
 }
 async  function companyinfo(to){
     await whatsappService.sendMessageFunction.sendText(to,"Para conocer más sobre nuestros servicios, te enviaré nuestro brochure empresarial. Ahí encontrarás todos los detalles sobre cómo podemos ayudarte a potenciar tu equipo con talento Tech de primer nivel.")
     
-    await whatsappService.sendMessageFunction.sendText(to,"Para conocer más sobre nuestros servicios, te enviaré nuestro brochure empresarial. Ahí encontrarás todos los detalles sobre cómo podemos ayudarte a potenciar tu equipo con talento Tech de primer nivel.")
     
 }
 async function sendcontacto(to){

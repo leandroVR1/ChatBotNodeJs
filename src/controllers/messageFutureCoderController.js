@@ -17,7 +17,9 @@ async function coderInfo(to) {
 async function coderRegistration(to) {
   await whatsappService.sendMessageFunction.sendText(to, "Aquí está el proceso de inscripción...");
 }
-
+async function coderAdvisor(to) {
+  await whatsappService.sendMessageFunction.sendText(to, "Aquí está el proceso de asesoría...");
+}
 async function sendMoreOptionsMessage(to) {
   const buttons = [
     { id: "option4coder", title: "4. Hablar con Asesor" },
@@ -31,5 +33,6 @@ module.exports = {
   sendWelcomeMessage,
   coderInfo,
   coderRegistration,
-  sendMoreOptionsMessage
+  sendMoreOptionsMessage,
+  coderAdvisor,
 };

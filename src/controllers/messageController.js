@@ -59,6 +59,7 @@ async function sendMessageTimeOutButton(to) {
     { id: `opcion1In`, title: "Sí ✅" },
     { id: `opcion2Out`, title: "No ❌" }
   ];
+  await whatsappService.sendMessageFunction.sendInteractiveMessage(to, "¿Deseas continuar con nosotros?", buttons);
 }
 module.exports = {
   sendWelcomeMessage,
