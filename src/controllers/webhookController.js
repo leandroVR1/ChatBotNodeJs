@@ -39,8 +39,6 @@ async function handleWebhook(req, res) {
 }
 
 async function handleTextMessage(from, text, userStateData) {
-  console.log(userStateData.timeOutId);
-
   switch (userStateData.stage) {
     case "initial":
       await messageController.sendWelcomeMessage(from);
@@ -148,10 +146,6 @@ async function handleReplyMessage(from, replyId, userStateData) {
       break;
     case "option1company":
       await messageCompanyController.companyinfo(from);
-      setTimeout(async () => {
-        await messageCompanyController.sendWelcomeMessage(from);
-      }, 10000);
-
       break;
     case "option4coder":
       await messageFuturoCoderController.coderAdvisor(from);
@@ -179,6 +173,9 @@ async function handleReplyMessage(from, replyId, userStateData) {
       break;
     case "option1contacto":
       await messageCompanyController.sendRiwiContacto(from);
+      setTimeout(async () => {
+        await messageController.sendInitialMenuMessage(from);
+      }, 3000);
       break;
     case "option2contacto":
       await messageController.sendInitialMenuMessage(from);
@@ -199,7 +196,7 @@ async function handleReplyMessage(from, replyId, userStateData) {
 
       break;
     case "option3coworking":
-      await messageController.sendBye(from);
+      await messageController.sendInitialMenuMessage(from);
 
       break;
     case "option1job":

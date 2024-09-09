@@ -22,7 +22,7 @@ async function askForEmail(to) {
   await whatsappService.sendMessageFunction.sendText(to, "Ahora, por favor, dime tu correo electrónico.");
 }
 async function sendBye(to) {
-    await whatsappService.sendMessageFunction.sendText(to, "Gracias por usar nuestro servicio. ¡Hasta luego!");
+    await whatsappService.sendMessageFunction.sendText(to, "¡Gracias por elegir Riwi! Estamos aquí para apoyarte en todo lo que necesites. No dudes en contactarnos si tienes más preguntas.");
 }
 async function confirmData(to, data, type) {
   const buttons = [
