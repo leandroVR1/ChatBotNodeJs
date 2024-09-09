@@ -125,7 +125,10 @@ async function handleReplyMessage(from, replyId, userStateData) {
       break;
     case "option1coder":
       await messageFuturoCoderController.coderInfo(from);
-      await messageFuturoCoderController.sendWelcomeMessage(from);
+      setTimeout(async () => {
+        await messageFuturoCoderController.sendMenu2(from);
+      },5000);
+      
       
       break;
     case "option5":
@@ -135,8 +138,8 @@ async function handleReplyMessage(from, replyId, userStateData) {
     case "option2coder":
       await messageFuturoCoderController.coderRegistration(from);
       setTimeout(async () => {
-        await messageFuturoCoderController.sendWelcomeMessage(from);
-      }, 2000);
+        await messageFuturoCoderController.sendMenu2(from);
+      }, 3000);
       break;
     case "option6":
       await messageController.sendBye(from);
@@ -151,14 +154,14 @@ async function handleReplyMessage(from, replyId, userStateData) {
       await messageCompanyController.companyinfo(from);
       setTimeout(async () => {
         await messageCompanyController.sendWelcomeMessage(from);
-      }, 2000);
+      }, 3000);
       
       break;
     case "option4coder":
       await messageFuturoCoderController.coderAdvisor(from);
       setTimeout(async () => {
-        await messageFuturoCoderController.sendWelcomeMessage(from);
-      }, 2000);
+        await messageFuturoCoderController.sendMenu2(from);
+      }, 3000);
       
       break;
     case "option2company":
@@ -169,7 +172,10 @@ async function handleReplyMessage(from, replyId, userStateData) {
       
       break;
     case "option5coder":
-      await messageController.sendInitialMenuMessage(from);
+      await messageFuturoCoderController.sendReturnMessage(from);
+      setTimeout(async () => {
+        await messageController.sendInitialMenuMessage(from);
+      }, 3000);
       
       break;
     case "option3company":
@@ -218,10 +224,7 @@ async function handleReplyMessage(from, replyId, userStateData) {
       
       break;
     case "option6coder":
-      await whatsappService.sendMessageFunction.sendText(
-        from,
-        "Gracias por usar nuestro servicio. ¡Hasta luego! 👋"
-      );
+      await messageFuturoCoderController.sendFinishMessage(from);
       
       userState.clearUserState(from);
       break;

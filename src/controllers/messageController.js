@@ -33,6 +33,7 @@ async function confirmData(to, data, type) {
 }
 
 async function sendInitialMenuMessage(to) {
+  await whatsappService.sendMessageFunction.sendText(to, "¡Bienvenido! 🎉 Estoy aquí para ayudarte a descubrir en que consiste el ecosistema *RIWI*.\n¿En qué puedo ayudarte hoy? 💻");
   const buttons = [
     { id: "option1", title: "1.Futuro Coder 💻" },
     { id: "option2", title: "2.Empresa 🏢" },
