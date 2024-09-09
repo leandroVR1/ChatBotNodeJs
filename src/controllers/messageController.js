@@ -33,7 +33,7 @@ async function confirmData(to, data, type) {
 }
 
 async function sendInitialMenuMessage(to) {
-  await whatsappService.sendMessageFunction.sendText(to, "¡Bienvenido! 🎉 Estoy aquí para ayudarte a descubrir en que consiste el ecosistema *RIWI*.\n¿En qué puedo ayudarte hoy? 💻");
+  await whatsappService.sendMessageFunction.sendText(to, "¡Bienvenido! Soy *_RiwiBot_*, tu asistente virtual.\nEstoy aquí para mostrarte cómo *Riwi* transforma el futuro con innovación y ayudarte con lo que necesites.\n¿en qué puedo ayudarte hoy?");
   const buttons = [
     { id: "option1", title: "1.Futuro Coder 💻" },
     { id: "option2", title: "2.Empresa 🏢" },

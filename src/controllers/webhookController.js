@@ -39,7 +39,6 @@ async function handleWebhook(req, res) {
 }
 
 async function handleTextMessage(from, text, userStateData) {
- 
   console.log(userStateData.timeOutId);
 
   switch (userStateData.stage) {
@@ -76,8 +75,6 @@ async function handleTextMessage(from, text, userStateData) {
 }
 
 async function handleReplyMessage(from, replyId, userStateData) {
- 
-
   switch (replyId) {
     case "accept_terms":
       await messageController.askForName(from);
@@ -88,7 +85,7 @@ async function handleReplyMessage(from, replyId, userStateData) {
         from,
         "Lo sentimos, debes aceptar los términos para continuar. ¡Hasta luego!"
       );
-      
+
       userState.clearUserState(from);
       break;
     case "confirm_nombre":
@@ -109,31 +106,30 @@ async function handleReplyMessage(from, replyId, userStateData) {
       break;
     case "option1":
       await messageFuturoCoderController.sendWelcomeMessage(from);
-      
+
       break;
     case "option2":
       await messageCompanyController.sendWelcomeMessage(from);
-      
+
       break;
     case "option3":
       await messageController.sendSecondaryMenuMessage(from);
-      
+
       break;
     case "option4":
       await messageCoworkingController.sendWelcomeMessage(from);
-      
+
       break;
     case "option1coder":
       await messageFuturoCoderController.coderInfo(from);
       setTimeout(async () => {
         await messageFuturoCoderController.sendMenu2(from);
-      },5000);
-      
-      
+      }, 3000);
+
       break;
     case "option5":
       await messageJobController.sendJobInfo(from);
-      
+
       break;
     case "option2coder":
       await messageFuturoCoderController.coderRegistration(from);
@@ -143,100 +139,108 @@ async function handleReplyMessage(from, replyId, userStateData) {
       break;
     case "option6":
       await messageController.sendBye(from);
-      
+
       userState.clearUserState(from);
       break;
     case "option3coder":
       await messageFuturoCoderController.sendMoreOptionsMessage(from);
-      
+
       break;
     case "option1company":
       await messageCompanyController.companyinfo(from);
       setTimeout(async () => {
         await messageCompanyController.sendWelcomeMessage(from);
-      }, 3000);
-      
+      }, 10000);
+
       break;
     case "option4coder":
       await messageFuturoCoderController.coderAdvisor(from);
       setTimeout(async () => {
         await messageFuturoCoderController.sendMenu2(from);
       }, 3000);
-      
+
       break;
     case "option2company":
       setTimeout(async () => {
         await messageCompanyController.sendcontacto(from);
       }, 2000);
-      
-      
+
       break;
     case "option5coder":
       await messageFuturoCoderController.sendReturnMessage(from);
       setTimeout(async () => {
         await messageController.sendInitialMenuMessage(from);
       }, 3000);
-      
+
       break;
     case "option3company":
       await messageController.sendInitialMenuMessage(from);
-      
+
       break;
     case "option1contacto":
       await messageCompanyController.sendRiwiContacto(from);
-      setTimeout(async () => {
-        await messageController.sendBye(from);
-      },2000);
-      
-      
       break;
     case "option2contacto":
       await messageController.sendInitialMenuMessage(from);
-      
+
       break;
     case "option1coworking":
       await messageCoworkingController.sendCoworkingInfo(from);
       setTimeout(async () => {
         await messageCoworkingController.sendWelcomeMessage(from);
       }, 2000);
-      
-      
-      
+
       break;
     case "option2coworking":
       await messageCoworkingController.sendContactoDayana(from);
       setTimeout(async () => {
         await messageCoworkingController.sendWelcomeMessage(from);
       }, 2000);
-      
-      
+
       break;
     case "option3coworking":
       await messageController.sendBye(from);
-      
+
       break;
     case "option1job":
       await messageController.sendInitialMenuMessage(from);
-      
+
       break;
     case "option2job":
       await messageController.sendBye(from);
-      
+
       break;
     case "option6coder":
       await messageFuturoCoderController.sendFinishMessage(from);
-      
+
       userState.clearUserState(from);
       break;
     case "opcion1In":
       await messageController.sendInitialMenuMessage(from);
-      
-      
+
       break;
     case "opcion2Out":
       await messageController.sendBye(from);
       userState.clearUserState(from);
-      
+
+      break;
+    case "option1cases":
+      await messageCompanyController.sendCases(from, "celsia");
+      setTimeout(async () => {
+        await messageCompanyController.sendWelcomeMessage(from);
+      }, 4000);
+      break;
+    case "option2cases":
+      await messageCompanyController.sendCases(from, "sistecredito");
+      setTimeout(async () => {
+        await messageCompanyController.sendWelcomeMessage(from);
+      }, 4000);
+      break;
+    case "option3cases":
+      await messageCompanyController.sendCases(from, "smartfit");
+      setTimeout(async () => {
+        await messageCompanyController.sendWelcomeMessage(from);
+      }, 4000);
       break;
     default:
       await whatsappService.sendMessageFunction.sendText(
@@ -267,19 +271,16 @@ function verifyWebhook(req, res) {
 //     inactivityMessageSent: false,
 //   });
 
- 
 //   if (userStateData.timeOutId) {
 //     clearTimeout(userStateData.timeOutId);
 //   }
-
 
 //   const timeOutId = setTimeout(async () => {
 //     try {
 //       const updatedUserState = userState.getUserState(from);
 
-     
 //       if (!updatedUserState.inactivityMessageSent) {
-        
+
 //         await messageController.sendMessageTime(from);
 //         await messageController.sendMessageTimeOutButton(from);
 //         userState.setUserState(from, {
@@ -292,14 +293,11 @@ function verifyWebhook(req, res) {
 //     }
 //   }, 60000)
 
-  
 //   userState.setUserState(from, {
 //     ...userStateData,
 //     timeOutId: timeOutId,
 //   });
 // }
-
-
 
 // async function clearInactivityTimer(from, userStateData) {
 //   console.log('User State Data:', userStateData);
@@ -309,11 +307,10 @@ function verifyWebhook(req, res) {
 //     clearTimeout(userStateData.timeOutId);
 //   }
 
-
 //   userState.setUserState(from, {
 //     ...userStateData,
 //     inactivityMessageSent: false,
-//     timeOutId: null, 
+//     timeOutId: null,
 //   });
 // }
 

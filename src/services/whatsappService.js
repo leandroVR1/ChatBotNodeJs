@@ -35,7 +35,28 @@ async function sendImage(to, link, caption) {
   };
   await sendMessage(message);
 }
-
+async function sendPDF(to, link, caption,filename) {
+  const message = {
+    messaging_product: "whatsapp",
+    to: to,
+    type: "document",
+    document: { 
+      link, // URL del documento PDF
+      caption, // Descripción opcional del PDF
+      filename
+    },
+  };
+  await sendMessage(message);
+}
+async function sendVideo(to, link, caption) {
+  const message = {
+    messaging_product: "whatsapp",
+    to: to,
+    type: "video",
+    video: { link, caption },
+  };
+  await sendMessage(message);
+}
 async function sendInteractiveMessage(to, bodyText, buttons) {
     const message = {
       messaging_product: "whatsapp",
@@ -64,6 +85,7 @@ async function sendInteractiveMessage(to, bodyText, buttons) {
     sendMessage,
     sendText,
     sendImage,
-    sendInteractiveMessage
+    sendInteractiveMessage,
+    sendPDF,sendVideo
   }
 module.exports={sendMessageFunction};

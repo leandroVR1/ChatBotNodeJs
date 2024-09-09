@@ -1,7 +1,7 @@
 const whatsappService = require("../services/whatsappService");
 
 async function sendWelcomeMessage(to) {
-  await whatsappService.sendMessageFunction.sendText(to, "¡Bienvenido! 🎉 Estoy aquí para ayudarte a descubrir lo que significa ser un coder y cómo puedes comenzar tu viaje en este emocionante mundo. ¿En qué puedo ayudarte hoy? 💻");
+  await whatsappService.sendMessageFunction.sendText(to, "Estoy aquí para ayudarte a descubrir lo que significa ser un coder y cómo puedes comenzar tu viaje en este emocionante mundo. ¿En qué puedo ayudarte hoy? 💻");
   const buttons = [
     { id: "option1coder", title: "1. En qué consiste" },
     { id: "option2coder", title: "2. Inscripción" },
@@ -20,10 +20,11 @@ async function sendMenu2(to) {
 }
 async function coderInfo(to) {
   await whatsappService.sendMessageFunction.sendText(to, "Ser un *Coder* significa ser un arquitecto del mundo digital 🌍. \nEs una persona que no solo escribe código, sino que también comprende y domina lenguajes de programación como _Python_ , _JavaScript_ , _entre otros_. \nUn *Coder* se dedica al desarrollo integral de software 💻 ya sea para aplicaciones web o móviles, enfocándose en construir la lógica 🔍 detrás de las funciones, manejar datos eficientemente  y realizar análisis que aseguren que el software opere de manera óptima ⚙️\nSu objetivo es garantizar que la experiencia del usuario sea fluida 🚀 y que el software sea escalable  y adaptable a nuevas necesidades .");
+  await whatsappService.sendMessageFunction.sendPDF(to,"https://firebasestorage.googleapis.com/v0/b/riwiprueba-54df5.appspot.com/o/Coder.pdf?alt=media&token=a539a513-1c25-4e50-bb42-699964deaad2","En este documento encontraras todo lo significa ser un *Coder* y toda la informacion relevante como : tiempo de duracion, metodología y pénsum, etc.","Riwi Coder");
 }
 
 async function coderRegistration(to) {
-  await whatsappService.sendMessageFunction.sendText(to, "¡Hola! 😊 estamos felices de estar en contacto contigo. \nEstás a solo un paso de comenzar un emocionante viaje para convertirte en un coder. A continuación, te compartimos toda la información necesaria y el enlace a nuestra página web 🌐 donde podrás completar tu inscripción de manera rápida y sencilla.Aquí está el proceso de inscripción...");
+  await whatsappService.sendMessageFunction.sendText(to, "Estás a solo un paso de comenzar un emocionante viaje para convertirte en un coder. A continuación, te compartimos toda la información necesaria y el enlace a nuestra página web 🌐 donde podrás completar tu inscripción de manera rápida y sencilla.Aquí está el proceso de inscripción...");
   await whatsappService.sendMessageFunction.sendText(to, "Te deseamos mucho éxito 🍀 en este nuevo desafío y estamos aquí para apoyarte en cada paso del camino. 📌 Inscríbete aquí: https://riwi.io/curso/#Aplicacion Si tienes alguna pregunta o necesitas más información, no dudes en contactarme 💬. ¡Estoy aquí para ayudarte!")
 }
 async function coderAdvisor(to) {
@@ -35,7 +36,7 @@ async function sendMoreOptionsMessage(to) {
     { id: "option5coder", title: "5. Regresar al menú" },
     { id: "option6coder", title: "6. Finalizar 🚪" },
   ];
-  await whatsappService.sendMessageFunction.sendInteractiveMessage(to, "Más opciones Futuro Coder:", buttons);
+  await whatsappService.sendMessageFunction.sendInteractiveMessage(to, "Selecciona una opción: ", buttons);
 }
 async function sendReturnMessage(to) {
   await whatsappService.sendMessageFunction.sendText(to, "Si quieres explorar otras opciones o necesitas revisar más información, puedes regresar al menú principal en cualquier momento. Solo indícalo, y te llevaré de vuelta para que puedas continuar explorando todas las posibilidades que tenemos para ti. 🚀");
