@@ -36,6 +36,41 @@ async function handleWebhook(req, res) {
   }
   res.sendStatus(200);
 }
+async function startInactivityTimer(from, inactivityDelay, gracePeriod) {
+  // Temporizador inicial de inactividad
+  setTimeout(async () => {
+    const userStateData = userState.getUserState(from);
+
+    // Verifica si el tiempo de inactividad ha pasado
+    if (Date.now() - userStateData.lastactive >= inactivityDelay) {
+      // Enviar mensaje de inactividad
+      await messageController.sendMessageTime(from);
+
+      // Iniciar el período de gracia
+      setTimeout(async () => {
+        const finalUserState = userState.getUserState(from);
+
+        // Verificar si el usuario interactuó durante el período de gracia
+        if (!finalUserState.interactedAfterInactivity) {
+          userState.clearUserState(from); // Limpiar el estado y finalizar el chat
+        } else {
+          // Si el usuario interactuó, continuar sin finalizar el chat
+          console.log("El usuario interactuó, se cancela la finalización del chat.");
+        }
+        
+      }, gracePeriod);
+
+    }
+  }, inactivityDelay);
+}
+
+// Función para actualizar el estado de interacción del usuario
+function userInteraction(from) {
+  const userStateData = userState.getUserState(from);
+  userStateData.interactedAfterInactivity = true; // Marca la interacción
+  userState.updateUserState(from, userStateData); // Actualiza el estado
+}
+
 
 async function handleTextMessage(from, text, userStateData) {
  
@@ -46,15 +81,26 @@ async function handleTextMessage(from, text, userStateData) {
       await messageController.sendWelcomeMessage(from);
       setTimeout(async () => {
         await messageController.sendTermsAndConditions(from);
-      }, 1000);
-      userState.setUserState(from, { stage: "awaiting_terms" });
+      }, 30000);
+      userState.setUserState(from, { stage: "awaiting_terms" , 
+        lastactive: Date.now(), 
+        interactedAfterInactivity: false 
+      });
+    
+      // Inicia el temporizador de inactividad
+      startInactivityTimer(from,  300000, 30000);
       break;
     case "awaiting_name":
       await messageController.confirmData(from, text, "nombre");
       userState.setUserState(from, {
         stage: "awaiting_name_confirmation",
-        name: text,
+        name: text, 
+        lastactive: Date.now(), 
+        interactedAfterInactivity: false 
       });
+    
+      // Inicia el temporizador de inactividad
+      startInactivityTimer(from, 300000, 30000);
       break;
     case "awaiting_email":
       if (!text.includes("@")) {
@@ -68,7 +114,12 @@ async function handleTextMessage(from, text, userStateData) {
         userState.setUserState(from, {
           stage: "awaiting_email_confirmation",
           email: text,
+          lastactive: Date.now(), 
+          interactedAfterInactivity: false 
         });
+      
+        // Inicia el temporizador de inactividad
+        startInactivityTimer(from, 300000, 30000);
       }
       break;
   }
@@ -80,7 +131,13 @@ async function handleReplyMessage(from, replyId, userStateData) {
   switch (replyId) {
     case "accept_terms":
       await messageController.askForName(from);
-      userState.setUserState(from, { stage: "awaiting_name" });
+      userState.setUserState(from, { stage: "awaiting_name" , 
+        lastactive: Date.now(), 
+        interactedAfterInactivity: false 
+      });
+    
+      // Inicia el temporizador de inactividad 5min 
+      startInactivityTimer(from, 300000, 30000);
       break;
     case "decline_terms":
       await whatsappService.sendMessageFunction.sendText(
@@ -92,11 +149,23 @@ async function handleReplyMessage(from, replyId, userStateData) {
       break;
     case "confirm_nombre":
       await messageController.askForEmail(from);
-      userState.setUserState(from, { stage: "awaiting_email" });
+      userState.setUserState(from, { stage: "awaiting_email", 
+        lastactive: Date.now(), 
+        interactedAfterInactivity: false 
+      });
+    
+      // Inicia el temporizador de inactividad
+      startInactivityTimer(from, 300000, 30000);
       break;
     case "retry_nombre":
       await messageController.askForName(from);
-      userState.setUserState(from, { stage: "awaiting_name" });
+      userState.setUserState(from, { stage: "awaiting_name", 
+        lastactive: Date.now(), 
+        interactedAfterInactivity: false 
+      });
+    
+      // Inicia el temporizador de inactividad
+      startInactivityTimer(from, 300000, 30000);
       break;
     case "confirm_correo electrónico":
       await messageController.sendInitialMenuMessage(from);
@@ -108,18 +177,44 @@ async function handleReplyMessage(from, replyId, userStateData) {
       break;
     case "option1":
       await messageFuturoCoderController.sendWelcomeMessage(from);
-      
+      userState.setUserState(from, { stage: "awaiting_opcion1",  
+        lastactive: Date.now(), 
+        interactedAfterInactivity: false 
+      });
+    
+      // Inicia el temporizador de inactividad
+      startInactivityTimer(from, 300000, 30000);
       break;
     case "option2":
       await messageCompanyController.sendWelcomeMessage(from);
+      userState.setUserState(from, { stage: "awaiting_opcion2",  
+        lastactive: Date.now(), 
+        interactedAfterInactivity: false 
+      });
+    
+      // Inicia el temporizador de inactividad
+      startInactivityTimer(from, 300000, 30000);
       
       break;
     case "option3":
       await messageController.sendSecondaryMenuMessage(from);
-      
+      userState.setUserState(from, { stage: "awaiting_opcion3",  
+        lastactive: Date.now(), 
+        interactedAfterInactivity: false 
+      });
+    
+      // Inicia el temporizador de inactividad
+      startInactivityTimer(from, 300000, 30000);
       break;
     case "option4":
       await messageCoworkingController.sendWelcomeMessage(from);
+      userState.setUserState(from, { stage: "awaiting_opcion4",  
+        lastactive: Date.now(), 
+        interactedAfterInactivity: false 
+      });
+    
+      // Inicia el temporizador de inactividad
+      startInactivityTimer(from, 300000, 30000);
       
       break;
     case "option1coder":
@@ -129,6 +224,13 @@ async function handleReplyMessage(from, replyId, userStateData) {
       break;
     case "option5":
       await messageJobController.sendJobInfo(from);
+      userState.setUserState(from, { stage: "awaiting_opcion5",  
+        lastactive: Date.now(), 
+        interactedAfterInactivity: false 
+      });
+    
+      // Inicia el temporizador de inactividad
+      startInactivityTimer(from, 300000, 30000);
       
       break;
     case "option2coder":
@@ -144,6 +246,13 @@ async function handleReplyMessage(from, replyId, userStateData) {
       break;
     case "option3coder":
       await messageFuturoCoderController.sendMoreOptionsMessage(from);
+      userState.setUserState(from, { stage: "awaiting_opcion3coder",  
+        lastactive: Date.now(), 
+        interactedAfterInactivity: false 
+      });
+    
+      // Inicia el temporizador de inactividad
+      startInactivityTimer(from, 300000, 30000);
       
       break;
     case "option1company":
@@ -151,7 +260,13 @@ async function handleReplyMessage(from, replyId, userStateData) {
       setTimeout(async () => {
         await messageCompanyController.sendcontacto(from);
       }, 1100);
-      
+      userState.setUserState(from, { stage: "awaiting_opcion1company",  
+        lastactive: Date.now(), 
+        interactedAfterInactivity: false 
+      });
+    
+      // Inicia el temporizador de inactividad
+      startInactivityTimer(from, 300000, 30000);
       break;
     case "option4coder":
       await messageFuturoCoderController.coderAdvisor(from);
@@ -164,6 +279,14 @@ async function handleReplyMessage(from, replyId, userStateData) {
       setTimeout(async () => {
         await messageCompanyController.sendcontacto(from);
       }, 1100);
+
+      userState.setUserState(from, { stage: "awaiting_opcion2company",  
+        lastactive: Date.now(), 
+        interactedAfterInactivity: false 
+      });
+    
+      // Inicia el temporizador de inactividad
+      startInactivityTimer(from, 300000, 30000);
       
       
       break;
@@ -188,7 +311,7 @@ async function handleReplyMessage(from, replyId, userStateData) {
       await messageCoworkingController.sendCoworkingInfo(from);
       setTimeout(async () => {
         await messageCoworkingController.sendWelcomeMessage(from);
-      }, 1000);
+      }, 30000);
       
       
       
@@ -197,7 +320,7 @@ async function handleReplyMessage(from, replyId, userStateData) {
       await messageCoworkingController.sendContactoDayana(from);
       setTimeout(async () => {
         await messageCoworkingController.sendWelcomeMessage(from);
-      }, 1000);
+      }, 30000);
       
       
       break;
@@ -231,6 +354,17 @@ async function handleReplyMessage(from, replyId, userStateData) {
       userState.clearUserState(from);
       
       break;
+      case "notContinuous":
+
+        userState.clearUserState(from);
+        break;
+        case "yesContinuous":
+
+        await messageController.sendWelcomeMessage(from);
+        setTimeout(async () => {
+          await messageController.sendTermsAndConditions(from);
+        }, 30000);
+        break;
     default:
       await whatsappService.sendMessageFunction.sendText(
         from,

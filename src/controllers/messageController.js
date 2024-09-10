@@ -12,7 +12,11 @@ async function sendTermsAndConditions(to) {
   await whatsappService.sendMessageFunction.sendInteractiveMessage(to, "¿Aceptas los términos y condiciones?", buttons);
 }
 async function sendMessageTime(to) {
-  await whatsappService.sendMessageFunction.sendText(to,"Hola, ¿Continuas con nosotros?")
+  const buttons = [
+    { id: "yesContinuous", title: "Sí ✅" },
+    { id: "notContinuous", title: "No ❌" }
+  ];
+  await whatsappService.sendMessageFunction.sendInteractiveMessage(to,"Hola, ¿Continuas con nosotros?",buttons)
 }
 async function askForName(to) {
   await whatsappService.sendMessageFunction.sendText(to, "Por favor, dime tu nombre.");
