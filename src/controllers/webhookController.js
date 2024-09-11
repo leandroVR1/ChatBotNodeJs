@@ -118,12 +118,6 @@ async function handleReplyMessage(from, replyId, userStateData) {
       await messageCoderController.sendRiwiContacto(from);
       break;
     case "option3coder":
-      await messageCoderController.sendMoreOptions(from);
-      break;
-    case "option4coder":
-      await messageCoderController.sendBack(from);
-      break;
-    case "option5coder":
       await messageCoderController.sendCloseConversation(from);
       break;
     case "option5":
@@ -131,6 +125,9 @@ async function handleReplyMessage(from, replyId, userStateData) {
       break;
     case "option6":
       await messageController.sendMoreOptionsMessage(from);
+      break;
+    case "option7":
+      await messageCoderController.sendCoderWelcomeMessage(from);
       break;
     case "option1company":
       await messageCompanyController.companyInfo(from);
