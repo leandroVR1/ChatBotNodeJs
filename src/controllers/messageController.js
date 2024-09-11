@@ -95,6 +95,5 @@ module.exports = {
   sendBye,
   sendMessageTime,
   sendMessageTimeOutButton,
-  sendMoreOptionsMessage,
-  handleCoderOption
+  sendMoreOptionsMessage
 };

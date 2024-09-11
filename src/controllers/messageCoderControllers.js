@@ -10,11 +10,11 @@ async function sendCoderWelcomeMessage(to) {
 }
 
 async function sendMoodleLink(to) {
-    await whatsappService.sendMessageFunction.sendText(to, "Aquí está el enlace de Moodle: [enlace]");
+    await whatsappService.sendMessageFunction.sendText(to, "Aquí está el enlace de Moodle:https://moodle.riwi.io/login");
 }
 
 async function sendRiwiContacto(to) {
-    await whatsappService.sendMessageFunction.sendText(to, "Aquí está el enlace de contacto Riwi: [enlace]");
+    await whatsappService.sendMessageFunction.sendText(to, "Aquí está el enlace de contacto Riwi:https://moodle.riwi.io/login");
 }
 
 async function sendMoreOptions(to) {
