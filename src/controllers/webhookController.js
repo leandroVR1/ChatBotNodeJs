@@ -130,8 +130,7 @@ async function handleReplyMessage(from, replyId, userStateData) {
       await messageJobController.sendJobInfo(from);
       break;
     case "option6":
-      await messageController.sendBye(from);
-      userState.clearUserState(from);
+      await messageController.sendMoreOptionsMessage(from);
       break;
     case "option1company":
       await messageCompanyController.companyInfo(from);
